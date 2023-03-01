@@ -2,7 +2,17 @@ import React, { useState } from "react";
 import Box from "@mui/material/Box";
 import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
-import Stack from "@mui/material/Stack";
+import "../todo/todo.css";
+import { createTheme, ThemeProvider } from "@mui/material/styles";
+
+const theme = createTheme({
+  palette: {
+    neutral: {
+      main: "rgb(31, 31, 84);",
+      contrastText: "#fff",
+    },
+  },
+});
 
 export const Todo = () => {
   const [input, setInput] = useState("");
@@ -41,8 +51,8 @@ export const Todo = () => {
   };
 
   return (
-    <div>
-      <h1>ToDo</h1>
+    <div class="page">
+      <h1 class="header">ToDo</h1>
       <Box
         component="form"
         sx={{
@@ -59,17 +69,21 @@ export const Todo = () => {
           variant="standard"
         />
       </Box>
-
-      <Stack direction="row" spacing={2}>
-        <Button onClick={addTodo} variant="outlined">
-          Add Task
-        </Button>
-      </Stack>
+      <ThemeProvider theme={theme}>
+        <Box textAlign={"center"}>
+          <Button onClick={addTodo} color="neutral" variant="outlined">
+            Add Task
+          </Button>
+        </Box>
+      </ThemeProvider>
 
       {todos.map((todo, index) => (
         <div key={todo.id}>
           <span key={index}>
-            <input
+            <TextField
+              sx={{
+                "& > :not(style)": { m: 1, width: "2ch" },
+              }}
               type="checkbox"
               checked={todo.isComplete}
               onChange={() => toggleChecked(todo)}
@@ -77,8 +91,12 @@ export const Todo = () => {
             {todo.title}
           </span>
 
-          <span>{todo.text}</span>
-          <button onClick={() => deleteTodo(todo.id)}>Delete</button>
+          {todo.text}
+          <ThemeProvider theme={theme}>
+            <Button color="neutral" onClick={() => deleteTodo(todo.id)}>
+              Delete
+            </Button>
+          </ThemeProvider>
         </div>
       ))}
     </div>

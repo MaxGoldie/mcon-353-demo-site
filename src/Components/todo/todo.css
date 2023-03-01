@@ -1,0 +1,11 @@
+.header {
+  color: rgb(31, 31, 84);
+  text-align: center;
+  border-style: solid;
+  border-color: rgb(31, 31, 84);
+}
+
+.page {
+  background-color: rgb(177, 141, 177);
+  text-align: center;
+}
