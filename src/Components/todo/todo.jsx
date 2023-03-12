@@ -5,8 +5,13 @@ import Button from "@mui/material/Button";
 import "../todo/todo.css";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 
+
+
 const theme = createTheme({
   palette: {
+    primary: {
+      main: 'rgb(247, 214, 247);',
+    },
     neutral: {
       main: "rgb(31, 31, 84);",
       contrastText: "#fff",
@@ -52,6 +57,7 @@ export const Todo = () => {
 
   return (
     <div class="page">
+      
       <h1 class="header">ToDo</h1>
       <Box
         component="form"
@@ -102,3 +108,4 @@ export const Todo = () => {
     </div>
   );
 };
+
