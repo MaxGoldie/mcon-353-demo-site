@@ -1,16 +1,16 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
+import { TodoContext } from "../state/todo/todo-context";
+import { TodoActions } from "../state/todo/todo.reducer";
 import Box from "@mui/material/Box";
 import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
 import "../todo/todo.css";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 
-
-
 const theme = createTheme({
   palette: {
     primary: {
-      main: 'rgb(247, 214, 247);',
+      main: "rgb(247, 214, 247);",
     },
     neutral: {
       main: "rgb(31, 31, 84);",
@@ -21,18 +21,7 @@ const theme = createTheme({
 
 export const Todo = () => {
   const [input, setInput] = useState("");
-  const [todos, setTodos] = useState([
-    {
-      id: 1,
-      text: "Walk dog",
-      isComplete: true,
-    },
-    {
-      id: 2,
-      text: "Clean bedroom",
-      isComplete: false,
-    },
-  ]);
+  const { todoState, todoDispatch } = useContext(TodoContext);
 
   const onInput = (event) => {
     console.log(event.target.value);
@@ -40,72 +29,81 @@ export const Todo = () => {
   };
 
   const addTodo = () => {
-    setTodos([...todos, { id: Date.now(), text: input, isComplete: false }]);
+    todoDispatch({
+      type: TodoActions.ADD,
+      todo: { title: input, isComplete: false, id: Date.now() },
+    });
     setInput("");
   };
 
   const toggleChecked = (todo) => {
-    const newTodos = [...todos];
-    const updatedTodo = newTodos.find((x) => x.text === todo.text);
-    updatedTodo.isComplete = !todo.isComplete;
-    setTodos(newTodos);
+    todoDispatch({
+      type: TodoActions.TOGGLE,
+      todo,
+    });
   };
 
   const deleteTodo = (id) => {
-    setTodos(todos.filter((todo) => todo.id !== id));
+    todoDispatch({
+      type: TodoActions.DELETE,
+      payload: id,
+    });
   };
 
   return (
-    <div class="page">
-      
-      <h1 class="header">ToDo</h1>
-      <Box
-        component="form"
-        sx={{
-          "& > :not(style)": { m: 1, width: "25ch" },
-        }}
-        noValidate
-        autoComplete="off"
-      >
-        <TextField
-          onInput={onInput}
-          value={input}
-          id="standard-basic"
-          label="Enter Task"
-          variant="standard"
-        />
-      </Box>
-      <ThemeProvider theme={theme}>
-        <Box textAlign={"center"}>
-          <Button onClick={addTodo} color="neutral" variant="outlined">
-            Add Task
-          </Button>
+    <TodoContext.Provider
+      value={{ todoState, addTodo, deleteTodo, toggleChecked }}
+    >
+      <div class="page">
+        <h1 class="header">ToDo</h1>
+        <Box
+          component="form"
+          sx={{
+            "& > :not(style)": { m: 1, width: "25ch" },
+          }}
+          noValidate
+          autoComplete="off"
+        >
+          <TextField
+            onInput={onInput}
+            value={input}
+            id="standard-basic"
+            label="Enter Task"
+            variant="standard"
+          />
         </Box>
-      </ThemeProvider>
-
-      {todos.map((todo, index) => (
-        <div key={todo.id}>
-          <span key={index}>
-            <TextField
-              sx={{
-                "& > :not(style)": { m: 1, width: "2ch" },
-              }}
-              type="checkbox"
-              checked={todo.isComplete}
-              onChange={() => toggleChecked(todo)}
-            />
-            {todo.title}
-          </span>
-
-          {todo.text}
-          <ThemeProvider theme={theme}>
-            <Button color="neutral" onClick={() => deleteTodo(todo.id)}>
-              Delete
+        <ThemeProvider theme={theme}>
+          <Box textAlign={"center"}>
+            <Button onClick={addTodo} color="neutral" variant="outlined">
+              Add Task
             </Button>
-          </ThemeProvider>
-        </div>
-      ))}
-    </div>
+          </Box>
+        </ThemeProvider>
+
+        {todoState.todos.map((todo, index) => (
+          <div>
+            <span key={index}>
+              <input
+                sx={{
+                  "& > :not(style)": { m: 1, width: "2ch" },
+                }}
+                type="checkbox"
+                checked={todo.isComplete}
+                onChange={() => toggleChecked(todo)}
+              />
+              {todo.title}
+            
+
+            {todo.text}
+            <ThemeProvider theme={theme}>
+              <Button color="neutral" onClick={() => deleteTodo(todo.id)}>
+                Delete
+              </Button>
+            </ThemeProvider>
+            </span>
+          </div>
+        ))}
+      </div>
+    </TodoContext.Provider>
   );
 };
-
