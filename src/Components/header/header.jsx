@@ -15,6 +15,7 @@ import { useNavigate } from "react-router-dom";
 const pages = [
   { name: "Home", path: "/" },
   { name: "Todo", path: "/todo" },
+  { name: "Chat", path: "/chat" },
 ];
 
 

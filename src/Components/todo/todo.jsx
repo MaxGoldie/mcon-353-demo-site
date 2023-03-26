@@ -51,9 +51,7 @@ export const Todo = () => {
   };
 
   return (
-    <TodoContext.Provider
-      value={{ todoState, addTodo, deleteTodo, toggleChecked }}
-    >
+   
       <div class="page">
         <h1 class="header">ToDo</h1>
         <Box
@@ -104,6 +102,6 @@ export const Todo = () => {
           </div>
         ))}
       </div>
-    </TodoContext.Provider>
+  
   );
 };
